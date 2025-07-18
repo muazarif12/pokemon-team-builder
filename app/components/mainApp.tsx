@@ -85,9 +85,9 @@ export const PokemonSearchApp: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Pokémon Team Builder
+            Pokemon Team Builder
           </h1>
-          <p className="text-gray-600">Search for Pokémon and build your dream team!</p>
+          <p className="text-gray-600">Search for Pokemon and build your dream team!</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
