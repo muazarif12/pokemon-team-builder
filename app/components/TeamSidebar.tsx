@@ -1,6 +1,14 @@
-import { Pokemon } from "../types/pokemon";
+import { Team } from "../types/pokemon";
 
-export const TeamSidebar = ({ team, onRemovePokemon }: { team: Pokemon[]; onRemovePokemon: (id: number) => void }) => {
+export const TeamSidebar = ({ 
+  currentTeam, 
+  onRemovePokemon 
+}: { 
+  currentTeam: Team | null; 
+  onRemovePokemon: (id: number) => void; 
+}) => {
+  const team = currentTeam?.pokemon || [];
+  
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit">
       <h2 className="text-xl font-bold text-gray-800 mb-4">

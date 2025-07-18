@@ -1,5 +1,7 @@
-import { Pokemon } from "../types/pokemon";
-export const TeamStats = ({ team }: { team: Pokemon[] }) => {
+import { Team } from "../types/pokemon";
+export const TeamStats = ({ currentTeam }: { currentTeam: Team | null }) => {
+  const team = currentTeam?.pokemon || [];
+  
   // Calculate unique types
   const getUniqueTypes = () => {
     const allTypes = team.flatMap(pokemon => 
@@ -136,4 +138,4 @@ export const TeamStats = ({ team }: { team: Pokemon[] }) => {
   );
 };
 
-export{ }
+export { }
