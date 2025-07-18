@@ -41,7 +41,7 @@ export const TeamStats = ({ team }: { team: Pokemon[] }) => {
       <div className="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 className="text-lg font-bold text-gray-800 mb-4">Team Stats</h3>
         <p className="text-gray-500 text-center py-4">
-          Add Pokémon to your team to see statistics!
+          Add Pokemons to your team to see statistics!
         </p>
       </div>
     );

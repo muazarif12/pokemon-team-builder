@@ -1,65 +1,124 @@
-import { Pokemon } from "../types/pokemon";
+import React from 'react';
+import { Pokemon } from '../types/pokemon';
 
-export const TeamSidebar = ({ team, onRemovePokemon }: { team: Pokemon[]; onRemovePokemon: (id: number) => void }) => {
+interface TeamSidebarProps {
+  team: Pokemon[];
+  onRemovePokemon: (pokemonId: number) => void;
+  teamName: string;
+  removingPokemonId?: number | null;
+}
+
+export const TeamSidebar: React.FC<TeamSidebarProps> = ({
+  team,
+  onRemovePokemon,
+  teamName,
+  removingPokemonId,
+}) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-fit">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">
-        Your Team ({team.length}/6)
-      </h2>
-      
+    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-gray-800">{teamName}</h3>
+        <span className="text-sm text-gray-500">{team.length}/6</span>
+      </div>
+
       {team.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
-          No Pokémon in your team yet.<br />
-          Search and add some!
-        </p>
+        <div className="text-center text-gray-500 py-8">
+          <p className="text-sm">Your team is empty.</p>
+          <p className="text-xs text-gray-400 mt-1">Search and add Pokemon!</p>
+        </div>
       ) : (
         <div className="space-y-3">
-          {team.map((pokemon) => (
-            <div key={pokemon.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+          {team.map((pokemon) => {
+            const isRemoving = removingPokemonId === pokemon.id;
+            
+            return (
+            <div
+              key={pokemon.id}
+              className={`flex items-center gap-3 p-3 bg-gray-50 rounded-lg transition-all duration-200 ${
+                isRemoving ? 'opacity-50 cursor-wait' : 'hover:bg-gray-100'
+              }`}
+            >
               <img
                 src={pokemon.sprites.front_default}
                 alt={pokemon.name}
                 className="w-12 h-12 object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = '/api/placeholder/48/48';
+                }}
               />
-              <div className="flex-1">
-                <p className="font-medium capitalize text-gray-800">{pokemon.name}</p>
+              
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-gray-800 capitalize truncate">
+                  {pokemon.name}
+                </h4>
                 <div className="flex gap-1 mt-1">
                   {pokemon.types.map((type, index) => (
                     <span
                       key={index}
-                      className="px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded"
+                      className={`px-2 py-1 text-xs font-medium rounded-full text-white ${getTypeColor(type.type.name)}`}
                     >
                       {type.type.name}
                     </span>
                   ))}
                 </div>
               </div>
+
               <button
                 onClick={() => onRemovePokemon(pokemon.id)}
-                className="text-red-500 hover:text-red-700 p-1 hover:bg-red-50 rounded transition-colors"
-                title="Remove from team"
+                disabled={isRemoving}
+                className={`p-1 transition-all duration-200 ${
+                  isRemoving 
+                    ? 'text-gray-300 cursor-wait' 
+                    : 'text-gray-400 hover:text-red-600'
+                }`}
+                title={isRemoving ? 'Removing...' : 'Remove from team'}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                {isRemoving ? (
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
               </button>
             </div>
-          ))}
+          )})}
         </div>
       )}
-      
-      {team.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <button
-            onClick={() => team.forEach(pokemon => onRemovePokemon(pokemon.id))}
-            className="w-full bg-red-100 hover:bg-red-200 text-red-700 py-2 px-4 rounded-lg font-medium transition-colors text-sm"
-          >
-            Clear Team
-          </button>
+
+      {team.length === 6 && (
+        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-700 font-medium text-center">
+           Your team is complete!
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-export{ }
+// Helper function to get type colors
+const getTypeColor = (type: string): string => {
+  const typeColors: { [key: string]: string } = {
+    normal: 'bg-gray-400',
+    fire: 'bg-red-500',
+    water: 'bg-blue-500',
+    electric: 'bg-yellow-400',
+    grass: 'bg-green-500',
+    ice: 'bg-blue-300',
+    fighting: 'bg-red-700',
+    poison: 'bg-purple-500',
+    ground: 'bg-yellow-600',
+    flying: 'bg-indigo-400',
+    psychic: 'bg-pink-500',
+    bug: 'bg-green-400',
+    rock: 'bg-yellow-800',
+    ghost: 'bg-purple-700',
+    dragon: 'bg-indigo-700',
+    dark: 'bg-gray-800',
+    steel: 'bg-gray-500',
+    fairy: 'bg-pink-300',
+  };
+  
+  return typeColors[type] || 'bg-gray-400';
+};
